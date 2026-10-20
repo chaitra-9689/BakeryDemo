@@ -42,7 +42,8 @@ Staff manage orders, customers and products in the CRM (see below).
 
 ## CRM (`/admin`)
 
-Back office at `/admin`, with its own sign-in page at `/admin/login`. Only accounts listed in `public.admins`
+Back office at `/admin`, with its own sign-in page at `/admin/login` (with "Forgot password?", which emails a link to
+`/admin/reset-password`). Only accounts listed in `public.admins`
 get in; everyone else is sent back to the sign-in page.
 
 - **Dashboard**: revenue, order and customer counts, average order value, 14-day revenue chart, orders by status,
@@ -63,6 +64,6 @@ insert into public.admins (user_id) select id from auth.users where email = 'som
 
 `/` home · `/shop` catalog with category filter, search, sort · `/product/:slug` · `/cart` ·
 `/checkout` · `/orders` · `/orders/:id` · `/account` · `/login` ·
-`/admin` · `/admin/orders[/:id]` · `/admin/customers[/:id]` · `/admin/products` · `/admin/login`
+`/admin` · `/admin/orders[/:id]` · `/admin/customers[/:id]` · `/admin/products` · `/admin/login` · `/admin/reset-password`
 
 Interactive elements carry `data-testid` attributes for Playwright tests.

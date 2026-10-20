@@ -16,6 +16,7 @@ import Account from './pages/Account';
 import NotFound from './pages/NotFound';
 import AdminLayout from './admin/AdminLayout';
 import AdminLogin from './admin/AdminLogin';
+import ResetPassword from './admin/ResetPassword';
 import Dashboard from './admin/Dashboard';
 import AdminOrders from './admin/AdminOrders';
 import AdminOrderDetail from './admin/AdminOrderDetail';
@@ -61,6 +62,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/admin/login" element={<AdminLogin />} />
+      <Route path="/admin/reset-password" element={<ResetPassword />} />
       <Route path="/admin" element={<RequireAdmin><AdminLayout /></RequireAdmin>}>
         <Route index element={<Dashboard />} />
         <Route path="orders" element={<AdminOrders />} />
