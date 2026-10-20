@@ -301,5 +301,7 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--brand); out
   .admin-sidebar-foot { margin-top: 0; margin-left: auto; flex-direction: row; align-items: center; gap: 12px; }
   .admin-user { display: none; }
   .admin-main { padding: 20px 16px 48px; }
-  .admin-grid { grid-template-columns: 1fr; }
+  .admin-grid { grid-template-columns: minmax(0, 1fr); }
+  /* Wide tables scroll inside their card instead of widening the page. */
+  .admin-page .card { min-width: 0; overflow-x: auto; }
 }
