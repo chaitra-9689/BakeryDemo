@@ -1,28 +1,3 @@
-import { Link } from 'react-router';
-
-const faqs = [
-  {
-    q: 'When will my order arrive?',
-    a: 'Orders placed before 8 pm are delivered the next morning. Orders after 8 pm go out the following day.',
-  },
-  {
-    q: 'Do you deliver to my area?',
-    a: 'We deliver within 15 km of the bakery. Enter your address at checkout to confirm.',
-  },
-  {
-    q: 'Do you offer gluten-free or vegan options?',
-    a: 'Yes — look for the gluten-free and vegan notes in each product description. Our kitchen handles wheat, nuts and dairy, so we cannot guarantee zero cross-contact.',
-  },
-  {
-    q: 'Can I place a custom or bulk order?',
-    a: 'Absolutely. For celebration cakes or orders of 24+ items, email us at least 48 hours ahead.',
-  },
-  {
-    q: 'Can I cancel or change an order?',
-    a: 'You can request changes until 9 pm the day before delivery by contacting us with your order number.',
-  },
-];
-
 const socials = [
   {
     name: 'Instagram',
@@ -62,29 +37,6 @@ export default function Footer() {
   return (
     <footer className="footer" data-testid="footer">
       <div className="container footer-grid">
-        <section className="footer-col" aria-labelledby="footer-about" data-testid="footer-about">
-          <h3 id="footer-about">About us</h3>
-          <p className="muted">
-            Crumb &amp; Co. started in 2014 as a two-oven corner bakery. We still bake everything from scratch each
-            morning — slow-fermented breads, laminated pastries and seasonal cakes made with local flour, butter and fruit.
-          </p>
-          <nav className="footer-links" aria-label="Footer">
-            <Link to="/shop">Shop</Link>
-            <Link to="/orders">My orders</Link>
-            <Link to="/account">Account</Link>
-          </nav>
-        </section>
-
-        <section className="footer-col footer-faq" aria-labelledby="footer-faq" data-testid="footer-faq">
-          <h3 id="footer-faq">FAQs</h3>
-          {faqs.map((f) => (
-            <details key={f.q} className="faq-item">
-              <summary>{f.q}</summary>
-              <p className="muted">{f.a}</p>
-            </details>
-          ))}
-        </section>
-
         <section className="footer-col" aria-labelledby="footer-contact" data-testid="footer-contact">
           <h3 id="footer-contact">Contact</h3>
           <address className="footer-contact">

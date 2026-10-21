@@ -64,6 +64,8 @@ insert into public.admins (user_id) select id from auth.users where email = 'som
 
 `/` home · `/shop` catalog with category filter, search, sort · `/product/:slug` · `/cart` ·
 `/checkout` · `/orders` · `/orders/:id` · `/account` · `/login` ·
+`/about` · `/faq`
+
 `/admin` · `/admin/orders[/:id]` · `/admin/customers[/:id]` · `/admin/products` · `/admin/login` · `/admin/reset-password`
 
 Interactive elements carry `data-testid` attributes for Playwright tests.
@@ -74,7 +76,7 @@ Interactive elements carry `data-testid` attributes for Playwright tests.
 npm run test:e2e
 ```
 
-`tests/e2e.mjs` drives Chromium (Playwright) through 48 test cases covering the storefront, footer, cart, customer
+`tests/e2e.mjs` drives Chromium (Playwright) through 49 test cases covering the storefront, About us and FAQs pages, footer, cart, customer
 accounts, checkout and every CRM screen, against `BASE_URL` from `.env` (the live site by default). It needs
 `ADMIN_EMAIL` / `ADMIN_PASSWORD` and a non-admin `CUSTOMER_EMAIL` / `CUSTOMER_PASSWORD` in `.env`. Each run
 replaces:

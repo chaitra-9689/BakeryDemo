@@ -13,6 +13,8 @@ import Login from './pages/Login';
 import Orders from './pages/Orders';
 import OrderDetail from './pages/OrderDetail';
 import Account from './pages/Account';
+import About from './pages/About';
+import Faq from './pages/Faq';
 import NotFound from './pages/NotFound';
 import AdminLayout from './admin/AdminLayout';
 import AdminLogin from './admin/AdminLogin';
@@ -75,6 +77,8 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/shop" element={<Shop />} />
         <Route path="/product/:slug" element={<ProductPage />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/faq" element={<Faq />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/login" element={<Login />} />
         <Route path="/checkout" element={<RequireAuth><Checkout /></RequireAuth>} />

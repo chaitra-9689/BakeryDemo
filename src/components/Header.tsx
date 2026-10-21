@@ -20,6 +20,8 @@ export default function Header() {
         </Link>
         <nav className="nav">
           <NavLink to="/shop" data-testid="nav-shop">Shop</NavLink>
+          <NavLink to="/about" data-testid="nav-about">About us</NavLink>
+          <NavLink to="/faq" data-testid="nav-faq">FAQs</NavLink>
           {user && <NavLink to="/orders" data-testid="nav-orders">My orders</NavLink>}
           {isAdmin && <NavLink to="/admin" data-testid="nav-admin">CRM</NavLink>}
           {user ? (

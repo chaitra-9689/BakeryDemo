@@ -369,46 +369,45 @@ test({
 });
 
 // ---------------------------------------------------------------------------
-// Footer
+// About us, FAQs and footer
 // ---------------------------------------------------------------------------
-const FOOTER_SECTIONS = [['footer-about', 'About us'], ['footer-faq', 'FAQs'], ['footer-contact', 'Contact'], ['footer-social', 'Follow us']];
+const FOOTER_SECTIONS = [['footer-contact', 'Contact'], ['footer-social', 'Follow us']];
 
 test({
-  module: 'Footer', title: 'Footer shows About us, FAQs, Contact and Follow us on store pages', priority: 'Medium',
-  preconditions: 'Visitor is signed out.', data: '/, /shop, /admin/login',
-  expected: 'Every store page has the footer with its four sections; the CRM sign-in page has no store footer.',
+  module: 'Storefront', title: '"About us" in the top navigation opens the About us page', priority: 'Medium',
+  preconditions: 'Visitor is signed out.', data: '—',
+  expected: 'Clicking "About us" goes to /about, highlights the link and shows the bakery story.',
 }, async () => {
   await signOutEverywhere();
-  for (const path of ['/', '/shop']) {
-    await step(`Scroll to the footer on ${path}`, `Footer shows: ${FOOTER_SECTIONS.map(([, h]) => h).join(', ')}`, async () => {
-      await go(path);
-      await tid('footer').scrollIntoViewIfNeeded();
-      for (const [id, heading] of FOOTER_SECTIONS) {
-        await visible(tid(id).getByRole('heading', { name: heading }));
-      }
-      const copyright = await text(tid('footer').locator('.footer-bottom'));
-      check(copyright.includes(`© ${new Date().getFullYear()} Crumb & Co. Bakery`), `Copyright line is "${copyright}"`);
-      return `All four sections shown; "${copyright}"`;
-    });
-  }
-  await step('Open the CRM sign-in page', 'Store footer is not shown', async () => {
-    await go('/admin/login');
-    await visible(tid('admin-login-form'));
-    check((await tid('footer').count()) === 0, 'Store footer is shown on the CRM sign-in page');
+  await go('/');
+  await step('Click "About us" in the header', 'Browser goes to /about and the "About us" link is highlighted', async () => {
+    await tid('nav-about').click();
+    await page.waitForURL(/\/about$/);
+    check((await tid('nav-about').getAttribute('class'))?.includes('active'), '"About us" link is not highlighted');
+    return `URL is ${page.url()}`;
+  });
+  await step('Read the page', '"About us" heading, the bakery story and a "Browse the shop" button', async () => {
+    const about = tid('about-page');
+    await visible(about.getByRole('heading', { name: 'About us' }));
+    await visible(about.getByText(/started in 2014/));
+    await about.getByRole('link', { name: 'Browse the shop' }).click();
+    await page.waitForURL(/\/shop$/);
+    return '"Browse the shop" opens /shop';
   });
 });
 
 test({
-  module: 'Footer', title: 'FAQ answers open and close', priority: 'Medium',
-  preconditions: 'On the home page.', data: '—',
-  expected: 'All FAQs start closed; clicking a question shows its answer, clicking again hides it.',
+  module: 'Storefront', title: '"FAQs" in the top navigation opens the FAQs page; answers open and close', priority: 'Medium',
+  preconditions: 'Visitor is signed out.', data: '—',
+  expected: 'Clicking "FAQs" goes to /faq with 5 closed questions; clicking a question shows its answer, clicking again hides it.',
 }, async () => {
   await go('/');
-  const faqs = tid('footer-faq').locator('details');
+  const faqs = tid('faq-page').locator('details');
   const first = faqs.first();
-  await step('Scroll to the FAQs', '5 questions, all closed', async () => {
-    await tid('footer-faq').scrollIntoViewIfNeeded();
-    await visible(first);
+  await step('Click "FAQs" in the header', 'Browser goes to /faq; 5 questions, all closed', async () => {
+    await tid('nav-faq').click();
+    await page.waitForURL(/\/faq$/);
+    await visible(tid('faq-page').getByRole('heading', { name: 'FAQs' }));
     const n = await faqs.count();
     check(n === 5, `Expected 5 FAQs, got ${n}`);
     const open = await faqs.evaluateAll((els) => els.filter((e) => e.open).length);
@@ -431,11 +430,36 @@ test({
 });
 
 test({
-  module: 'Footer', title: 'Footer contact, social and quick links', priority: 'Medium',
-  preconditions: 'Visitor is signed out.', data: '—',
-  expected: 'Phone and email are tap-to-call / tap-to-mail links, social links open in a new tab, quick links navigate.',
+  module: 'Footer', title: 'Footer shows Contact and Follow us only', priority: 'Medium',
+  preconditions: 'Visitor is signed out.', data: '/, /shop, /admin/login',
+  expected: 'Store pages show Contact and Follow us in the footer, with no About us or FAQs; the CRM sign-in page has no store footer.',
 }, async () => {
-  await signOutEverywhere();
+  for (const path of ['/', '/shop']) {
+    await step(`Scroll to the footer on ${path}`, 'Footer shows Contact and Follow us, and no About us or FAQs', async () => {
+      await go(path);
+      await tid('footer').scrollIntoViewIfNeeded();
+      for (const [id, heading] of FOOTER_SECTIONS) {
+        await visible(tid(id).getByRole('heading', { name: heading }));
+      }
+      const headings = (await tid('footer').getByRole('heading').allTextContents()).map((h) => h.trim());
+      check(headings.join('|') === 'Contact|Follow us', `Footer headings are ${headings.join(', ')}`);
+      const copyright = await text(tid('footer').locator('.footer-bottom'));
+      check(copyright.includes(`© ${new Date().getFullYear()} Crumb & Co. Bakery`), `Copyright line is "${copyright}"`);
+      return `Headings: ${headings.join(', ')}; "${copyright}"`;
+    });
+  }
+  await step('Open the CRM sign-in page', 'Store footer is not shown', async () => {
+    await go('/admin/login');
+    await visible(tid('admin-login-form'));
+    check((await tid('footer').count()) === 0, 'Store footer is shown on the CRM sign-in page');
+  });
+});
+
+test({
+  module: 'Footer', title: 'Footer contact and social links', priority: 'Medium',
+  preconditions: 'On the home page.', data: '—',
+  expected: 'Phone and email are tap-to-call / tap-to-mail links; social links open in a new tab.',
+}, async () => {
   await go('/');
   await step('Check the Contact section', 'Address, a tel: phone link, a mailto: email link and opening hours', async () => {
     const contact = tid('footer-contact');
@@ -460,27 +484,23 @@ test({
     }
     return links.map((l) => l.label).join(', ');
   });
-  await step('Click "Shop" in the footer', 'Shop page opens', async () => {
-    await tid('footer-about').getByRole('link', { name: 'Shop' }).click();
-    await page.waitForURL(/\/shop$/);
-    return `URL is ${page.url()}`;
-  });
-  await step('Click "My orders" in the footer as a guest', 'Redirected to /login?next=%2Forders', async () => {
-    await tid('footer-about').getByRole('link', { name: 'My orders' }).click();
-    await page.waitForURL(/\/login\?next=%2Forders/);
-    return `URL is ${page.url()}`;
-  });
 });
 
 test({
-  module: 'Footer', title: 'Footer on a phone-sized screen', priority: 'Low',
+  module: 'Footer', title: 'Header and footer on a phone-sized screen', priority: 'Low',
   preconditions: '—', data: 'Viewport 390 × 844',
-  expected: 'Footer sections stack in one column and the page does not scroll sideways.',
+  expected: '"About us" and "FAQs" are reachable in the header, footer sections stack in one column, no sideways scrolling.',
 }, async () => {
   try {
     await page.setViewportSize({ width: 390, height: 844 });
-    await step('Open the home page at phone width and scroll to the footer', 'Sections stacked top to bottom; no horizontal scroll', async () => {
+    await step('Open the home page at phone width', '"About us" and "FAQs" are visible in the header; no horizontal scroll', async () => {
       await go('/');
+      await visible(tid('nav-about'));
+      await visible(tid('nav-faq'));
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+      check(overflow <= 0, `Page scrolls sideways by ${overflow}px`);
+    });
+    await step('Scroll to the footer', 'Contact above Follow us in one column; no horizontal scroll', async () => {
       await tid('footer').scrollIntoViewIfNeeded();
       await visible(tid('footer-social'));
       const layout = await page.evaluate((ids) => ({
@@ -489,7 +509,7 @@ test({
         overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
       }), FOOTER_SECTIONS.map(([id]) => id));
       check(new Set(layout.lefts).size === 1, `Sections are not in one column (left edges ${layout.lefts.join(', ')})`);
-      check(layout.tops.every((t, i) => i === 0 || t > layout.tops[i - 1]), 'Sections are not stacked in order');
+      check(layout.tops[1] > layout.tops[0], 'Follow us is not below Contact');
       check(layout.overflow <= 0, `Page scrolls sideways by ${layout.overflow}px`);
       return 'One column, no horizontal scroll';
     });
